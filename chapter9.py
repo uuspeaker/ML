@@ -54,7 +54,6 @@ y = tf.constant(housing.target.reshape(-1, 1), dtype=tf.float32, name="y")
 XT = tf.transpose(X)
 print(XT)
 theta = tf.matmul(tf.matmul(tf.matrix_inverse(tf.matmul(XT, X)), XT), y)
-theta = tf.matmul(tf.matmul(inv_XTmul, XT), y)
 
 with tf.Session() as sess:
     theta_value = theta.eval()
