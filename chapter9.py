@@ -66,6 +66,12 @@ reset_graph()
 n_epochs = 1000
 learning_rate = 0.01
 
+from sklearn.preprocessing import StandardScaler
+scaler = StandardScaler()
+scaled_housing_data = scaler.fit_transform(housing.data)
+scaled_housing_data_plus_bias = np.c_[np.ones((m, 1)), scaled_housing_data]
+print(scaled_housing_data_plus_bias)
+
 X = tf.constant(scaled_housing_data_plus_bias, dtype=tf.float32, name="X")
 y = tf.constant(housing.target.reshape(-1, 1), dtype=tf.float32, name="y")
 theta = tf.Variable(tf.random_uniform([n + 1, 1], -1.0, 1.0, seed=42), name="theta")
