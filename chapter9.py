@@ -4,12 +4,12 @@ from __future__ import division, print_function, unicode_literals
 # Common imports
 import numpy as np
 import os
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 # to make this notebook's output stable across runs
 def reset_graph(seed=42):
-    tf.compat.v1.reset_default_graph()
-    tf.compat.v1.set_random_seed(seed)
+    tf.reset_default_graph()
+    tf.set_random_seed(seed)
     np.random.seed(seed)
 
 # To plot pretty figures
