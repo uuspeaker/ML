@@ -52,15 +52,16 @@ housing_data_plus_bias = np.c_[np.ones((m, 1)), housing.data]
 X = tf.constant(housing_data_plus_bias, dtype=tf.float32, name="X")
 y = tf.constant(housing.target.reshape(-1, 1), dtype=tf.float32, name="y")
 XT = tf.transpose(X)
-print(XT)
+print("XT",XT)
 theta = tf.matmul(tf.matmul(tf.matrix_inverse(tf.matmul(XT, X)), XT), y)
+print("theta",theta)
 
 with tf.Session() as sess:
     theta_value = theta.eval()
     print("线性回归 theta_value",theta_value)
 
 # 梯度下降
-# reset_graph()
+reset_graph()
 
 n_epochs = 1000
 learning_rate = 0.01
