@@ -53,7 +53,10 @@ X = tf.constant(housing_data_plus_bias, dtype=tf.float32, name="X")
 y = tf.constant(housing.target.reshape(-1, 1), dtype=tf.float32, name="y")
 XT = tf.transpose(X)
 print(XT)
-theta = tf.matmul(tf.matmul(tf.lu_matrix_inverse(*tf.linalg.lu((tf.matmul(XT, X)))), XT), y)
+XTmul = tf.matmul(XT, X)
+print("XTmul",XTmul)
+inv_XTmul = tf.lu_matrix_inverse(*tf.linalg.lu(XTmul))
+theta = tf.matmul(tf.matmul(inv_XTmul, XT), y)
 
 with tf.Session() as sess:
     theta_value = theta.eval()
