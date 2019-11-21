@@ -55,7 +55,7 @@ XT = tf.transpose(X)
 print(XT)
 XTmul = tf.matmul(XT, X)
 print("XTmul",XTmul)
-inv_XTmul = tf.lu_matrix_inverse(*tf.linalg.lu(XTmul))
+inv_XTmul = tf.matrix_inverse(*tf.linalg.lu(XTmul))
 theta = tf.matmul(tf.matmul(inv_XTmul, XT), y)
 
 with tf.Session() as sess:
