@@ -7,7 +7,7 @@ import os
 
 # to make this notebook's output stable across runs
 def reset_graph(seed=42):
-    # tf.reset_default_graph()
+    tf.reset_default_graph()
     tf.set_random_seed(seed)
     np.random.seed(seed)
 
@@ -31,7 +31,7 @@ def save_fig(fig_id, tight_layout=True):
 
 import tensorflow as tf
 
-reset_graph()
+# reset_graph()
 
 x = tf.Variable(3, name="x")
 y = tf.Variable(4, name="y")
@@ -60,7 +60,7 @@ with tf.Session() as sess:
     print("线性回归 theta_value",theta_value)
 
 # 梯度下降
-reset_graph()
+# reset_graph()
 
 n_epochs = 1000
 learning_rate = 0.01
