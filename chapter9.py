@@ -4,11 +4,12 @@ from __future__ import division, print_function, unicode_literals
 # Common imports
 import numpy as np
 import os
+import tensorflow as tf
 
 # to make this notebook's output stable across runs
 def reset_graph(seed=42):
-    tf.reset_default_graph()
-    tf.set_random_seed(seed)
+    tf.compat.v1.reset_default_graph()
+    tf.compat.v1.set_random_seed(seed)
     np.random.seed(seed)
 
 # To plot pretty figures
@@ -29,9 +30,8 @@ def save_fig(fig_id, tight_layout=True):
         plt.tight_layout()
     plt.savefig(path, format='png', dpi=300)
 
-import tensorflow as tf
 
-# reset_graph()
+reset_graph()
 
 x = tf.Variable(3, name="x")
 y = tf.Variable(4, name="y")
@@ -41,7 +41,7 @@ f = x*x*y + y + 2
 import numpy as np
 from sklearn.datasets import fetch_california_housing
 
-#reset_graph()
+reset_graph()
 
 housing = fetch_california_housing()
 m, n = housing.data.shape
