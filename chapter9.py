@@ -56,9 +56,9 @@ print("XT",XT)
 theta = tf.matmul(tf.matmul(tf.matrix_inverse(tf.matmul(XT, X)), XT), y)
 print("theta",theta)
 
-with tf.Session() as sess:
-    theta_value = theta.eval()
-    print("线性回归 theta_value",theta_value)
+# with tf.Session() as sess:
+#     theta_value = theta.eval()
+#     print("线性回归 theta_value",theta_value)
 
 # 梯度下降
 reset_graph()
