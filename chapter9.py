@@ -120,7 +120,7 @@ theta = tf.get_default_graph().get_tensor_by_name("theta:0") # not shown in the 
 with tf.Session() as sess:
     saver.restore(sess, "/tmp/my_model_final.ckpt")  # this restores the graph's state
     best_theta_restored = theta.eval() # not shown in the book
-print("保存计算图,导出计算图,结果验证", np.allclose(best_theta, best_theta_restored))
+print("导出计算图并计算,", best_theta_restored)
 
 # 小批量梯度下降
 reset_graph()
