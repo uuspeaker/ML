@@ -58,9 +58,9 @@ print("XT",XT)
 theta = tf.matmul(tf.matmul(tf.matrix_inverse(tf.matmul(XT, X)), XT), y)
 print("theta",theta)
 
-# with tf.Session() as sess:
-#     theta_value = theta.eval()
-#     print("线性回归 theta_value",theta_value)
+with tf.Session() as sess:
+    theta_value = theta.eval()
+    print("线性回归 theta_value",theta_value)
 
 # 梯度下降
 reset_graph()
@@ -72,7 +72,7 @@ from sklearn.preprocessing import StandardScaler
 scaler = StandardScaler()
 scaled_housing_data = scaler.fit_transform(housing.data)
 scaled_housing_data_plus_bias = np.c_[np.ones((m, 1)), scaled_housing_data]
-print(scaled_housing_data_plus_bias)
+print("归一化权重并附加常数1 计算前数据",scaled_housing_data_plus_bias)
 
 X = tf.constant(scaled_housing_data_plus_bias, dtype=tf.float32, name="X")
 y = tf.constant(housing.target.reshape(-1, 1), dtype=tf.float32, name="y")
@@ -81,10 +81,16 @@ y_pred = tf.matmul(X, theta, name="predictions")
 error = y_pred - y
 mse = tf.reduce_mean(tf.square(error), name="mse")
 
+# 不使用优化器
 gradients = tf.gradients(mse, [theta])[0]
-
 training_op = tf.assign(theta, theta - learning_rate * gradients)
-
+# 使用优化器
+# optimizer = tf.train.GradientDescentOptimizer(learning_rate=learning_rate)
+# training_op = optimizer.minimize(mse)
+# 使用动量优化器
+# optimizer = tf.train.MomentumOptimizer(learning_rate=learning_rate,
+#                                        momentum=0.9)
+# training_op = optimizer.minimize(mse)
 init = tf.global_variables_initializer()
 
 with tf.Session() as sess:
