@@ -1,6 +1,7 @@
 # To support both python 2 and python 3
 from __future__ import division, print_function, unicode_literals
-
+import os
+os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
 # Common imports
 import numpy as np
 import os
@@ -163,6 +164,7 @@ with tf.Session() as sess:
             sess.run(training_op, feed_dict={X: X_batch, y: y_batch})
             # 记录计算图日志
             step = epoch * n_batches + batch_index
+            summary_str = mse_summary.eval(feed_dict={X: X_batch, y: y_batch})
             file_writer.add_summary(summary_str, step)
 
     best_theta = theta.eval()
