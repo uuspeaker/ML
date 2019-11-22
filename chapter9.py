@@ -6,6 +6,8 @@ import numpy as np
 import os
 import tensorflow.compat.v1 as tf
 
+tf.disable_eager_execution()
+
 # to make this notebook's output stable across runs
 def reset_graph(seed=42):
     tf.reset_default_graph()
