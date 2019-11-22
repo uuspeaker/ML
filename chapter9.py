@@ -92,6 +92,7 @@ training_op = tf.assign(theta, theta - learning_rate * gradients)
 #                                        momentum=0.9)
 # training_op = optimizer.minimize(mse)
 init = tf.global_variables_initializer()
+saver = tf.train.Saver()
 
 with tf.Session() as sess:
     sess.run(init)
