@@ -99,12 +99,27 @@ with tf.Session() as sess:
     for epoch in range(n_epochs):
         if epoch % 100 == 0:
             print("Epoch", epoch, "MSE =", mse.eval())
+            # 保存模型
+            save_path = saver.save(sess, "/tmp/my_model.ckpt")
         sess.run(training_op)
 
     best_theta = theta.eval()
+    # 保存模型
+    save_path = saver.save(sess, "/tmp/my_model_final.ckpt")
 
 print("梯度下降 Best theta:")
 print(best_theta)
+# 验证保存计算图，到处计算图
+reset_graph()
+# notice that we start with an empty graph.
+
+saver = tf.train.import_meta_graph("/tmp/my_model_final.ckpt.meta")  # this loads the graph structure
+theta = tf.get_default_graph().get_tensor_by_name("theta:0") # not shown in the book
+
+with tf.Session() as sess:
+    saver.restore(sess, "/tmp/my_model_final.ckpt")  # this restores the graph's state
+    best_theta_restored = theta.eval() # not shown in the book
+print("保存计算图,导出计算图,结果验证 \r\n",np.allclose(best_theta, best_theta_restored))
 
 # 小批量梯度下降
 reset_graph()
