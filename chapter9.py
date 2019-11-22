@@ -120,10 +120,15 @@ theta = tf.get_default_graph().get_tensor_by_name("theta:0") # not shown in the 
 with tf.Session() as sess:
     saver.restore(sess, "/tmp/my_model_final.ckpt")  # this restores the graph's state
     best_theta_restored = theta.eval() # not shown in the book
-print("保存计算图,导出计算图,结果验证 \r\n",np.allclose(best_theta, best_theta_restored))
+print("保存计算图,导出计算图,结果验证", np.allclose(best_theta, best_theta_restored))
 
 # 小批量梯度下降
 reset_graph()
+from datetime import datetime
+
+now = datetime.utcnow().strftime("%Y%m%d%H%M%S")
+root_logdir = "tf_logs"
+logdir = "{}/run-{}/".format(root_logdir, now)
 
 X = tf.placeholder(tf.float32, shape=(None, n + 1), name="X")
 y = tf.placeholder(tf.float32, shape=(None, 1), name="y")
@@ -135,6 +140,9 @@ optimizer = tf.train.GradientDescentOptimizer(learning_rate=learning_rate)
 training_op = optimizer.minimize(mse)
 
 init = tf.global_variables_initializer()
+# 计算图写入器
+mse_summary = tf.summary.scalar('MSE', mse)
+file_writer = tf.summary.FileWriter(logdir, tf.get_default_graph())
 
 n_epochs = 10
 batch_size = 100
@@ -153,6 +161,10 @@ with tf.Session() as sess:
         for batch_index in range(n_batches):
             X_batch, y_batch = fetch_batch(epoch, batch_index, batch_size)
             sess.run(training_op, feed_dict={X: X_batch, y: y_batch})
+            # 记录计算图日志
+            step = epoch * n_batches + batch_index
+            file_writer.add_summary(summary_str, step)
 
     best_theta = theta.eval()
     print("小批量梯度下降\r\n",best_theta)
+    file_writer.close()
