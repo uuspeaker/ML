@@ -35,8 +35,8 @@ X = tf.compat.v1.placeholder(tf.float32, shape=(None, n_inputs), name="X")
 y = tf.compat.v1.placeholder(tf.float32, shape=(None), name="y")
 
 with tf.name_scope("dnn"):
-    hidden1 = tf.keras.layers.Dense(X, n_hidden1,  name="hidden1")
-    hidden2 = tf.keras.layers.Dense(hidden1, n_hidden2,  name="hidden2")
+    hidden1 = tf.keras.layers.Dense(X, n_hidden1, activation='relu', name="hidden1")
+    hidden2 = tf.keras.layers.Dense(hidden1, n_hidden2, activation='relu', name="hidden2")
     logits = tf.keras.layers.Dense(hidden2, n_outputs, name="outputs")
 
 with tf.name_scope("loss"):
