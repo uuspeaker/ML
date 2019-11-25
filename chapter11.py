@@ -35,9 +35,9 @@ X = tf.compat.v1.placeholder(tf.float32, shape=(None, n_inputs), name="X")
 y = tf.compat.v1.placeholder(tf.float32, shape=(None), name="y")
 
 with tf.name_scope("dnn"):
-    hidden1 = tf.keras.layers.Dense(X, n_hidden1, activation=None, name="hidden1")
-    hidden2 = tf.keras.layers.Dense(hidden1, n_hidden2, activation=None, name="hidden2")
-    logits = tf.keras.layers.Dense(hidden2, n_outputs, name="outputs")
+    hidden1 = tf.compat.v1.layers.dense(X, n_hidden1, activation=leaky_relu, name="hidden1")
+    hidden2 = tf.compat.v1.layers.dense(hidden1, n_hidden2, activation=leaky_relu, name="hidden2")
+    logits = tf.compat.v1.layers.dense(hidden2, n_outputs, name="outputs")
 
 with tf.name_scope("loss"):
     xentropy = tf.nn.sparse_softmax_cross_entropy_with_logits(labels=y, logits=logits)
