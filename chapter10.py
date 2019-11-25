@@ -47,6 +47,7 @@ per_clf.fit(X, y)
 y_pred = per_clf.predict([[2, 0.5]])
 
 # 使用ｔｅｎｓｏｒｆｌｏｗ多层神经网络
+reset_graph()
 (X_train, y_train), (X_test, y_test) = tf.keras.datasets.mnist.load_data()
 X_train = X_train.astype(np.float32).reshape(-1, 28*28) / 255.0
 X_test = X_test.astype(np.float32).reshape(-1, 28*28) / 255.0
@@ -65,5 +66,10 @@ dnn_clf.train(input_fn=input_fn)
 
 test_input_fn = tf.estimator.inputs.numpy_input_fn(
     x={"X": X_test}, y=y_test, shuffle=False)
-eval_results = dnn_clf.evaluate(input_fn=test_input_fn)
+# 执行耗时，暂屏蔽
+evl_results = dnn_clf.evaluate(input_fn=test_input_fn)
 print("tensorflow 多层神经网络",eval_results)
+
+
+
+

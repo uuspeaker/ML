@@ -2,6 +2,9 @@
 from __future__ import division, print_function, unicode_literals
 import os
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
+import warnings
+
+warnings.filterwarnings('ignore')
 # Common imports
 import numpy as np
 import os
