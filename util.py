@@ -2,6 +2,7 @@ import os
 import tarfile
 import tensorflow.compat.v1 as tf
 import matplotlib.pyplot as plt
+import numpy as np
 
 from six.moves import urllib
 DOWNLOAD_ROOT = "https://raw.githubusercontent.com/ageron/handson-ml/master/"
