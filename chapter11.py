@@ -6,7 +6,6 @@ from util import reset_graph
 tf.disable_eager_execution()
 
 # 使用Ｈｅ初始化权重　
-import tensorflow as tf
 reset_graph()
 
 n_inputs = 28 * 28  # MNIST
@@ -24,20 +23,20 @@ X = tf.compat.v1.placeholder(tf.float32, shape=(None, n_inputs), name="X")
 def leaky_relu(z, name=None):
     return tf.maximum(0.01 * z, z, name=name)
 
-hidden1 = tf.compat.v1.layers.dense(X, n_hidden1, activation=leaky_relu, name="hidden1")
+hidden1 = tf.layers.dense(X, n_hidden1, activation=leaky_relu, name="hidden1")
 reset_graph()
 
 n_inputs = 28 * 28  # MNIST
 n_hidden1 = 300
 n_hidden2 = 100
 n_outputs = 10
-X = tf.compat.v1.placeholder(tf.float32, shape=(None, n_inputs), name="X")
-y = tf.compat.v1.placeholder(tf.int32, shape=(None), name="y")
+X = tf.placeholder(tf.float32, shape=(None, n_inputs), name="X")
+y = tf.placeholder(tf.int32, shape=(None), name="y")
 
 with tf.name_scope("dnn"):
-    hidden1 = tf.compat.v1.layers.dense(X, n_hidden1, activation=leaky_relu, name="hidden1")
-    hidden2 = tf.compat.v1.layers.dense(hidden1, n_hidden2, activation=leaky_relu, name="hidden2")
-    logits = tf.compat.v1.layers.dense(hidden2, n_outputs, name="outputs")
+    hidden1 = tf.layers.dense(X, n_hidden1, activation=leaky_relu, name="hidden1")
+    hidden2 = tf.layers.dense(hidden1, n_hidden2, activation=leaky_relu, name="hidden2")
+    logits = tf.layers.dense(hidden2, n_outputs, name="outputs")
 
 with tf.name_scope("loss"):
     xentropy = tf.nn.sparse_softmax_cross_entropy_with_logits(labels=y, logits=logits)
@@ -46,12 +45,12 @@ with tf.name_scope("loss"):
 learning_rate = 0.01
 
 with tf.name_scope("train"):
-    optimizer = tf.compat.v1.train.GradientDescentOptimizer(learning_rate)
+    optimizer = tf.train.GradientDescentOptimizer(learning_rate)
     training_op = optimizer.minimize(loss)
 
 with tf.name_scope("eval"):
-    correct = tf.compat.v1.nn.in_top_k(logits, y, 1)
-    accuracy = tf.compat.v1.reduce_mean(tf.cast(correct, tf.float32))
+    correct = tf.nn.in_top_k(logits, y, 1)
+    accuracy = tf.reduce_mean(tf.cast(correct, tf.float32))
 
 init = tf.global_variables_initializer()
 saver = tf.train.Saver()
