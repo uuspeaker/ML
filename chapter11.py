@@ -42,7 +42,7 @@ with tf.name_scope("dnn"):
 learning_rate = 0.01
 
 with tf.name_scope("train"):
-    optimizer = tf.train.GradientDescentOptimizer(learning_rate)
+    optimizer = tf.compat.v1.train.GradientDescentOptimizer(learning_rate)
     training_op = optimizer.minimize(loss)
 
 with tf.name_scope("eval"):
