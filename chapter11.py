@@ -33,6 +33,7 @@ n_hidden2 = 100
 n_outputs = 10
 X = tf.compat.v1.placeholder(tf.float32, shape=(None, n_inputs), name="X")
 y = tf.compat.v1.placeholder(tf.int32, shape=(None), name="y")
+tf.cast(y, tf.float32)
 
 with tf.name_scope("dnn"):
     hidden1 = tf.compat.v1.layers.dense(X, n_hidden1, activation=leaky_relu, name="hidden1")
@@ -59,8 +60,8 @@ saver = tf.train.Saver()
 (X_train, y_train), (X_test, y_test) = tf.keras.datasets.mnist.load_data()
 X_train = X_train.astype(np.float32).reshape(-1, 28*28) / 255.0
 X_test = X_test.astype(np.float32).reshape(-1, 28*28) / 255.0
-y_train = y_train.astype(np.float32)
-y_test = y_test.astype(np.float32)
+y_train = y_train.astype(np.int32)
+y_test = y_test.astype(np.int32)
 X_valid, X_train = X_train[:5000], X_train[5000:]
 y_valid, y_train = y_train[:5000], y_train[5000:]
 
