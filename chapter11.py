@@ -50,8 +50,8 @@ with tf.name_scope("train"):
     training_op = optimizer.minimize(loss)
 
 with tf.name_scope("eval"):
-    correct = tf.nn.in_top_k(logits, y, 1)
-    accuracy = tf.reduce_mean(tf.cast(correct, tf.float32))
+    correct = tf.compat.v1.nn.in_top_k(logits, y, 1)
+    accuracy = tf.compat.v1.reduce_mean(tf.cast(correct, tf.float32))
 
 init = tf.global_variables_initializer()
 saver = tf.train.Saver()
