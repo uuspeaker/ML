@@ -18,7 +18,7 @@ n_hidden1 = 300
 # 实现lucky ReLU
 reset_graph()
 
-X = tf.compat.v1.placeholder(tf.float32, shape=(None, n_inputs), name="X")
+X = tf.placeholder(tf.float32, shape=(None, n_inputs), name="X")
 
 def leaky_relu(z, name=None):
     return tf.maximum(0.01 * z, z, name=name)
