@@ -258,6 +258,7 @@ with tf.name_scope("dnn"):
 
 W1 = tf.get_default_graph().get_tensor_by_name("hidden1/kernel:0")
 W2 = tf.get_default_graph().get_tensor_by_name("outputs/kernel:0")
+print("W1,W2", W1, W2)
 
 scale = 0.001 # l1 regularization hyperparameter
 
