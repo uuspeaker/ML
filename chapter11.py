@@ -13,7 +13,6 @@ n_inputs = 28 * 28  # MNIST
 n_hidden1 = 300
 
 X = tf.compat.v1.placeholder(tf.float32, shape=(None, n_inputs), name="X")
-he_init = tf.variance_scaling_initializer()
-hidden1 = tf.layers.dense(X, n_hidden1, activation=tf.nn.relu,
-                          kernel_initializer=he_init, name="hidden1")
+hidden1 = tf.keras.layers.Dense(X, n_hidden1, activation=tf.nn.relu,
+                          kernel_initializer='glorot_uniform', name="hidden1")
 
