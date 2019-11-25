@@ -73,22 +73,20 @@ def shuffle_batch(X, y, batch_size):
 n_epochs = 40
 batch_size = 50
 
-with tf.Session() as sess:
-    init.run()
-    for epoch in range(n_epochs):
-        for X_batch, y_batch in shuffle_batch(X_train, y_train, batch_size):
-            sess.run(training_op, feed_dict={X: X_batch, y: y_batch})
-        if epoch % 5 == 0:
-            acc_batch = accuracy.eval(feed_dict={X: X_batch, y: y_batch})
-            acc_valid = accuracy.eval(feed_dict={X: X_valid, y: y_valid})
-            print(epoch, "Batch accuracy:", acc_batch, "Validation accuracy:", acc_valid)
-
-    save_path = saver.save(sess, "./my_model_final.ckpt")
+# with tf.Session() as sess:
+#     init.run()
+#     for epoch in range(n_epochs):
+#         for X_batch, y_batch in shuffle_batch(X_train, y_train, batch_size):
+#             sess.run(training_op, feed_dict={X: X_batch, y: y_batch})
+#         if epoch % 5 == 0:
+#             acc_batch = accuracy.eval(feed_dict={X: X_batch, y: y_batch})
+#             acc_valid = accuracy.eval(feed_dict={X: X_valid, y: y_valid})
+#             print(epoch, "Batch accuracy:", acc_batch, "Validation accuracy:", acc_valid)
+#
+#     save_path = saver.save(sess, "./my_model_final.ckpt")
 
 # 应用批量归一化
 reset_graph()
-
-import tensorflow as tf
 
 n_inputs = 28 * 28
 n_hidden1 = 300
@@ -182,16 +180,16 @@ batch_size = 200
 
 extra_update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
 
-with tf.Session() as sess:
-    init.run()
-    for epoch in range(n_epochs):
-        for X_batch, y_batch in shuffle_batch(X_train, y_train, batch_size):
-            sess.run([training_op, extra_update_ops],
-                     feed_dict={training: True, X: X_batch, y: y_batch})
-        accuracy_val = accuracy.eval(feed_dict={X: X_valid, y: y_valid})
-        print(epoch, "Validation accuracy:", accuracy_val)
-
-    save_path = saver.save(sess, "./my_model_final.ckpt")
+# with tf.Session() as sess:
+#     init.run()
+#     for epoch in range(n_epochs):
+#         for X_batch, y_batch in shuffle_batch(X_train, y_train, batch_size):
+#             sess.run([training_op, extra_update_ops],
+#                      feed_dict={training: True, X: X_batch, y: y_batch})
+#         accuracy_val = accuracy.eval(feed_dict={X: X_valid, y: y_valid})
+#         print(epoch, "Validation accuracy:", accuracy_val)
+#
+#     save_path = saver.save(sess, "./my_model_final.ckpt")
 
 # adam 优化法
 reset_graph()
@@ -222,6 +220,7 @@ with tf.name_scope("train"):       # not shown in the book
     decay_steps = 10000
     decay_rate = 1/10
     global_step = tf.Variable(0, trainable=False, name="global_step")
+    # 学习率衰减decayed_learning_rate = learning_rate * decay_rate ^ (global_step / decay_steps)
     learning_rate = tf.train.exponential_decay(initial_learning_rate, global_step,
                                                decay_steps, decay_rate)
     optimizer = tf.train.AdamOptimizer(learning_rate)
