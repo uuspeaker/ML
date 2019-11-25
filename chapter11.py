@@ -24,7 +24,7 @@ X = tf.compat.v1.placeholder(tf.float32, shape=(None, n_inputs), name="X")
 def leaky_relu(z, name=None):
     return tf.maximum(0.01 * z, z, name=name)
 
-hidden1 = tf.layers.dense(X, n_hidden1, activation=leaky_relu, name="hidden1")
+hidden1 = tf.compat.v1.layers.dense(X, n_hidden1, activation=leaky_relu, name="hidden1")
 reset_graph()
 
 n_inputs = 28 * 28  # MNIST
@@ -35,9 +35,9 @@ X = tf.compat.v1.placeholder(tf.float32, shape=(None, n_inputs), name="X")
 y = tf.compat.v1.placeholder(tf.int32, shape=(None), name="y")
 
 with tf.name_scope("dnn"):
-    hidden1 = tf.layers.dense(X, n_hidden1, activation=leaky_relu, name="hidden1")
-    hidden2 = tf.layers.dense(hidden1, n_hidden2, activation=leaky_relu, name="hidden2")
-    logits = tf.layers.dense(hidden2, n_outputs, name="outputs")
+    hidden1 = tf.compat.v1.layers.dense(X, n_hidden1, activation=leaky_relu, name="hidden1")
+    hidden2 = tf.compat.v1.layers.dense(hidden1, n_hidden2, activation=leaky_relu, name="hidden2")
+    logits = tf.compat.v1.layers.dense(hidden2, n_outputs, name="outputs")
 
 learning_rate = 0.01
 
