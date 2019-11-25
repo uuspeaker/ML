@@ -19,7 +19,7 @@ n_hidden1 = 300
 # 实现lucky ReLU
 reset_graph()
 
-X = tf.placeholder(tf.float32, shape=(None, n_inputs), name="X")
+X = tf.compat.v1.placeholder(tf.float32, shape=(None, n_inputs), name="X")
 
 def leaky_relu(z, name=None):
     return tf.maximum(0.01 * z, z, name=name)
@@ -31,8 +31,8 @@ n_inputs = 28 * 28  # MNIST
 n_hidden1 = 300
 n_hidden2 = 100
 n_outputs = 10
-X = tf.placeholder(tf.float32, shape=(None, n_inputs), name="X")
-y = tf.placeholder(tf.int32, shape=(None), name="y")
+X = tf.compat.v1.placeholder(tf.float32, shape=(None, n_inputs), name="X")
+y = tf.compat.v1.placeholder(tf.int32, shape=(None), name="y")
 
 with tf.name_scope("dnn"):
     hidden1 = tf.layers.dense(X, n_hidden1, activation=leaky_relu, name="hidden1")
