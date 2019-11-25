@@ -32,8 +32,7 @@ n_hidden1 = 300
 n_hidden2 = 100
 n_outputs = 10
 X = tf.compat.v1.placeholder(tf.float32, shape=(None, n_inputs), name="X")
-y = tf.compat.v1.placeholder(tf.int32, shape=(None), name="y")
-tf.cast(y, tf.float32)
+y = tf.compat.v1.placeholder(tf.float32, shape=(None), name="y")
 
 with tf.name_scope("dnn"):
     hidden1 = tf.compat.v1.layers.dense(X, n_hidden1, activation=leaky_relu, name="hidden1")
