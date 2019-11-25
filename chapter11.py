@@ -39,6 +39,10 @@ with tf.name_scope("dnn"):
     hidden2 = tf.compat.v1.layers.dense(hidden1, n_hidden2, activation=leaky_relu, name="hidden2")
     logits = tf.compat.v1.layers.dense(hidden2, n_outputs, name="outputs")
 
+with tf.name_scope("loss"):
+    xentropy = tf.nn.sparse_softmax_cross_entropy_with_logits(labels=y, logits=logits)
+    loss = tf.reduce_mean(xentropy, name="loss")
+
 learning_rate = 0.01
 
 with tf.name_scope("train"):
