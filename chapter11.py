@@ -256,7 +256,7 @@ scale = 0.001 # l1 regularization hyperparameter
 
 my_dense_layer = partial(
     tf.layers.dense, activation=tf.nn.relu,
-    kernel_regularizer=tensorflow.keras.regularizers.l1_l2(l1=0.01,l2=0.01))
+    kernel_regularizer=tf.keras.regularizers.l1_l2(l1=0.01,l2=0.01))
 
 with tf.name_scope("dnn"):
     hidden1 = my_dense_layer(X, n_hidden1, name="hidden1")
