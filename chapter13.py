@@ -18,15 +18,13 @@ def plot_color_image(image):
 # 卷基层实现
 from sklearn.datasets import load_sample_image
 china = load_sample_image("china.jpg")
-print("china", china.shape)
 flower = load_sample_image("flower.jpg")
-print("flower", flower.shape)
 image = china[150:220, 130:250]
 height, width, channels = image.shape
 image_grayscale = image.mean(axis=2).astype(np.float32)
-print("image_grayscale", image_grayscale)
+
 images = image_grayscale.reshape(1, height, width, 1)
-print("images", images)
+
 
 fmap = np.zeros(shape=(7, 7, 1, 2), dtype=np.float32)
 fmap[:, 3, 0, 0] = 1
@@ -69,16 +67,16 @@ filters[3, :, :, 1] = 1  # horizontal line
 X = tf.placeholder(tf.float32, shape=(None, height, width, channels))
 convolution = tf.nn.conv2d(X, filters, strides=[1,2,2,1], padding="SAME")
 
-with tf.Session() as sess:
-    output = sess.run(convolution, feed_dict={X: dataset})
-
-plt.imshow(output[0, :, :, 1], cmap="gray") # plot 1st image's 2nd feature map
-plt.show()
-
-for image_index in (0, 1):
-    for feature_map_index in (0, 1):
-        plot_image(output[image_index, :, :, feature_map_index])
-        plt.show()
+# with tf.Session() as sess:
+#     output = sess.run(convolution, feed_dict={X: dataset})
+#
+# plt.imshow(output[0, :, :, 1], cmap="gray") # plot 1st image's 2nd feature map
+# plt.show()
+#
+# for image_index in (0, 1):
+#     for feature_map_index in (0, 1):
+#         plot_image(output[image_index, :, :, feature_map_index])
+#         plt.show()
 
 # 使用tf.layers.conv2d()
 reset_graph()
@@ -88,11 +86,33 @@ conv = tf.layers.conv2d(X, filters=2, kernel_size=7, strides=[2,2],
                         padding="SAME")
 init = tf.global_variables_initializer()
 
-with tf.Session() as sess:
-    init.run()
-    output = sess.run(conv, feed_dict={X: dataset})
+# with tf.Session() as sess:
+#     init.run()
+#     output = sess.run(conv, feed_dict={X: dataset})
+#
+# plt.imshow(output[0, :, :, 1], cmap="gray") # plot 1st image's 2nd feature map
+# plt.show()
 
-plt.imshow(output[0, :, :, 1], cmap="gray") # plot 1st image's 2nd feature map
+# 实现池化层
+batch_size, height, width, channels = dataset.shape
+
+filters = np.zeros(shape=(7, 7, channels, 2), dtype=np.float32)
+filters[:, 3, :, 0] = 1  # vertical line
+filters[3, :, :, 1] = 1  # horizontal line
+X = tf.placeholder(tf.float32, shape=(None, height, width, channels))
+max_pool = tf.nn.max_pool(X, ksize=[1,2,2,1], strides=[1,2,2,1],padding="VALID")
+
+with tf.Session() as sess:
+    output = sess.run(max_pool, feed_dict={X: dataset})
+
+plt.imshow(output[0].astype(np.uint8))  # plot the output for the 1st image
+plt.show()
+plot_color_image(dataset[0])
+save_fig("china_original")
+plt.show()
+
+plot_color_image(output[0])
+save_fig("china_max_pool")
 plt.show()
 
 
