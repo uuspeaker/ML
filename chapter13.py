@@ -1,7 +1,7 @@
 import numpy as np
 import os
 import tensorflow.compat.v1 as tf
-from util import reset_graph
+from util import reset_graph, save_fig
 import matplotlib.pyplot as plt
 
 tf.disable_eager_execution()
