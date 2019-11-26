@@ -15,7 +15,7 @@ def plot_color_image(image):
     plt.axis("off")
 
 PROJECT_ROOT_DIR = "."
-CHAPTER_ID = "cnn"
+CHAPTER_ID = "cnn" 
 
 def save_fig(fig_id, tight_layout=True):
     path = os.path.join(PROJECT_ROOT_DIR, "images", CHAPTER_ID, fig_id + ".png")
