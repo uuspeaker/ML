@@ -29,7 +29,7 @@ images = image_grayscale.reshape(1, height, width, 1)
 fmap = np.zeros(shape=(7, 7, 1, 2), dtype=np.float32)
 fmap[:, 3, 0, 0] = 1
 fmap[3, :, 0, 1] = 1
-print("fmap",fmap)
+
 plot_image(fmap[:, :, 0, 0])
 plt.show()
 plot_image(fmap[:, :, 0, 1])
@@ -184,7 +184,7 @@ def shuffle_batch(X, y, batch_size):
         yield X_batch, y_batch
 
 n_epochs = 10
-batch_size = 100
+batch_size = 10
 
 with tf.Session() as sess:
     init.run()
