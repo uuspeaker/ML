@@ -14,15 +14,6 @@ def plot_color_image(image):
     plt.imshow(image.astype(np.uint8),interpolation="nearest")
     plt.axis("off")
 
-PROJECT_ROOT_DIR = "."
-CHAPTER_ID = "cnn" 
-
-def save_fig(fig_id, tight_layout=True):
-    path = os.path.join(PROJECT_ROOT_DIR, "images", CHAPTER_ID, fig_id + ".png")
-    print("Saving figure", fig_id)
-    if tight_layout:
-        plt.tight_layout()
-    plt.savefig(path, format='png', dpi=300)
 
 # 卷基层实现
 from sklearn.datasets import load_sample_image

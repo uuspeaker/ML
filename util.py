@@ -24,8 +24,9 @@ def reset_graph(seed=42):
     tf.set_random_seed(seed)
     np.random.seed(seed)
 
+PROJECT_ROOT_DIR = "."
 def save_fig(fig_id, tight_layout=True):
-    path = os.path.join(PROJECT_ROOT_DIR, "images", CHAPTER_ID, fig_id + ".png")
+    path = os.path.join(PROJECT_ROOT_DIR, "images", fig_id + ".png")
     print("Saving figure", fig_id)
     if tight_layout:
         plt.tight_layout()
