@@ -134,6 +134,7 @@ reset_graph()
 with tf.name_scope("inputs"):
     X = tf.placeholder(tf.float32, shape=[None, n_inputs], name="X")
     X_reshaped = tf.reshape(X, shape=[-1, height, width, channels])
+    print("X_reshaped.shape ======================", X_reshaped.shape)
     y = tf.placeholder(tf.int32, shape=[None], name="y")
 
 conv1 = tf.layers.conv2d(X_reshaped, filters=conv1_fmaps, kernel_size=conv1_ksize,
