@@ -339,6 +339,6 @@ with tf.Session() as sess:
 
     if best_model_params:
         restore_model_params(best_model_params)
-    acc_test = accuracy.eval(feed_dict={X: X_test[:1000], y: y_test[:1000]})
+    acc_test = accuracy.eval(feed_dict={X: X_test, y: y_test})
     print("Final accuracy on test set:", acc_test)
     save_path = saver.save(sess, "./my_mnist_model")
