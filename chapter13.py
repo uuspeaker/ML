@@ -350,7 +350,7 @@ import tarfile
 from six.moves import urllib
 
 FLOWERS_URL = "http://download.tensorflow.org/example_images/flower_photos.tgz"
-FLOWERS_PATH = os.path.join("datasets", "flowers")
+FLOWERS_PATH = os.path.join("dataset", "flowers")
 
 def download_progress(count, block_size, total_size):
     percent = count * block_size * 100 // total_size
