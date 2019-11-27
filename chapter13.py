@@ -134,7 +134,7 @@ reset_graph()
 with tf.name_scope("inputs"):
     X = tf.placeholder(tf.float32, shape=[None, n_inputs], name="X")
     X_reshaped = tf.reshape(X, shape=[-1, height, width, channels])
-
+    print("X_reshaped.shape", X_reshaped.shape)
     y = tf.placeholder(tf.int32, shape=[None], name="y")
 
 conv1 = tf.layers.conv2d(X_reshaped, filters=conv1_fmaps, kernel_size=conv1_ksize,
@@ -176,8 +176,9 @@ with tf.name_scope("init_and_save"):
     saver = tf.train.Saver()
 
 (X_train, y_train), (X_test, y_test) = tf.keras.datasets.mnist.load_data()
-print('X_train.shape========', X_train.shape)
-print('y_train.shape========', y_train.shape)
+print('X_train.shape,y_train.shape========', X_train.shape,y_train.shape)
+print('X_test.shape,y_test.shape========', X_test.shape,y_test.shape)
+
 X_train = X_train.astype(np.float32).reshape(-1, 28*28) / 255.0
 X_test = X_test.astype(np.float32).reshape(-1, 28*28) / 255.0
 y_train = y_train.astype(np.int32)
@@ -202,11 +203,11 @@ with tf.Session() as sess:
         num = 0
         for X_batch, y_batch in shuffle_batch(X_train, y_train, batch_size):
             num += 1
-            print("epoch num X_batch.shape", epoch, num, X_batch.shape)
+            print("epoch num X_batch.shape y_batch.shape", epoch, num, X_batch.shape, y_batch.shape)
 
             sess.run(training_op, feed_dict={X: X_batch, y: y_batch},options = run_opts)
         acc_batch = accuracy.eval(feed_dict={X: X_batch, y: y_batch})
-        acc_test = accuracy.eval(feed_dict={X: X_test, y: y_test})
+        acc_test = accuracy.eval(feed_dict={X: X_test[:1000], y: y_test[:1000]})
         print(epoch, "Last batch accuracy:", acc_batch, "Test accuracy:", acc_test)
 
         save_path = saver.save(sess, "./my_mnist_model")
