@@ -309,36 +309,91 @@ batch_size = 50
 iteration = 0
 
 best_loss_val = np.infty
-check_interval = 500
+check_interval = 50
 checks_since_last_progress = 0
 max_checks_without_progress = 20
 best_model_params = None
 
-with tf.Session() as sess:
-    init.run()
-    for epoch in range(n_epochs):
-        for X_batch, y_batch in shuffle_batch(X_train, y_train, batch_size):
-            iteration += 1
-            print("epoch iteration",epoch, iteration)
-            sess.run(training_op, feed_dict={X: X_batch, y: y_batch, training: True})
-            if iteration % check_interval == 0:
-                loss_val = loss.eval(feed_dict={X: X_valid, y: y_valid})
-                if loss_val < best_loss_val:
-                    best_loss_val = loss_val
-                    checks_since_last_progress = 0
-                    best_model_params = get_model_params()
-                else:
-                    checks_since_last_progress += 1
-        acc_batch = accuracy.eval(feed_dict={X: X_batch, y: y_batch})
-        acc_val = accuracy.eval(feed_dict={X: X_valid[:100], y: y_valid[:100]})
-        print("Epoch {}, last batch accuracy: {:.4f}%, valid. accuracy: {:.4f}%, valid. best loss: {:.6f}".format(
-                  epoch, acc_batch * 100, acc_val * 100, best_loss_val))
-        if checks_since_last_progress > max_checks_without_progress:
-            print("Early stopping!")
-            break
+# with tf.Session() as sess:
+#     init.run()
+#     for epoch in range(n_epochs):
+#         for X_batch, y_batch in shuffle_batch(X_train, y_train, batch_size):
+#             iteration += 1
+#             print("epoch iteration",epoch, iteration)
+#             sess.run(training_op, feed_dict={X: X_batch, y: y_batch, training: True})
+#             if iteration % check_interval == 0:
+#                 loss_val = loss.eval(feed_dict={X: X_valid, y: y_valid})
+#                 if loss_val < best_loss_val:
+#                     best_loss_val = loss_val
+#                     checks_since_last_progress = 0
+#                     best_model_params = get_model_params()
+#                 else:
+#                     checks_since_last_progress += 1
+#         acc_batch = accuracy.eval(feed_dict={X: X_batch, y: y_batch})
+#         acc_val = accuracy.eval(feed_dict={X: X_valid[:100], y: y_valid[:100]})
+#         print("Epoch {}, last batch accuracy: {:.4f}%, valid. accuracy: {:.4f}%, valid. best loss: {:.6f}".format(
+#                   epoch, acc_batch * 100, acc_val * 100, best_loss_val))
+#         if checks_since_last_progress > max_checks_without_progress:
+#             print("Early stopping!")
+#             break
+#
+#     if best_model_params:
+#         restore_model_params(best_model_params)
+#     acc_test = accuracy.eval(feed_dict={X: X_test[:100], y: y_test[:100]})
+#     print("Final accuracy on test set:", acc_test)
+#     save_path = saver.save(sess, "./my_mnist_model")
 
-    if best_model_params:
-        restore_model_params(best_model_params)
-    acc_test = accuracy.eval(feed_dict={X: X_test[:100], y: y_test[:100]})
-    print("Final accuracy on test set:", acc_test)
-    save_path = saver.save(sess, "./my_mnist_model")
+#训练图像识别
+print ("==========训练图像识别===========")
+import sys
+import tarfile
+from six.moves import urllib
+
+FLOWERS_URL = "http://download.tensorflow.org/example_images/flower_photos.tgz"
+FLOWERS_PATH = os.path.join("datasets", "flowers")
+
+def fetch_flowers(url=FLOWERS_URL, path=FLOWERS_PATH):
+    if os.path.exists(FLOWERS_PATH):
+        return
+    os.makedirs(path, exist_ok=True)
+    tgz_path = os.path.join(path, "flower_photos.tgz")
+    urllib.request.urlretrieve(url, tgz_path, reporthook=download_progress)
+    flowers_tgz = tarfile.open(tgz_path)
+    flowers_tgz.extractall(path=path)
+    flowers_tgz.close()
+    os.remove(tgz_path)
+
+fetch_flowers()
+
+flowers_root_path = os.path.join(FLOWERS_PATH, "flower_photos")
+flower_classes = sorted([dirname for dirname in os.listdir(flowers_root_path)
+                  if os.path.isdir(os.path.join(flowers_root_path, dirname))])
+print("flower_classes",flower_classes)
+
+from collections import defaultdict
+
+image_paths = defaultdict(list)
+
+for flower_class in flower_classes:
+    image_dir = os.path.join(flowers_root_path, flower_class)
+    for filepath in os.listdir(image_dir):
+        if filepath.endswith(".jpg"):
+            image_paths[flower_class].append(os.path.join(image_dir, filepath))
+
+for paths in image_paths.values():
+    paths.sort()
+
+import matplotlib.image as mpimg
+
+n_examples_per_class = 2
+
+for flower_class in flower_classes:
+    print("Class:", flower_class)
+    plt.figure(figsize=(10,5))
+    for index, example_image_path in enumerate(image_paths[flower_class][:n_examples_per_class]):
+        example_image = mpimg.imread(example_image_path)[:, :, :channels]
+        plt.subplot(100 + n_examples_per_class * 10 + index + 1)
+        plt.title("{}x{}".format(example_image.shape[1], example_image.shape[0]))
+        plt.imshow(example_image)
+        plt.axis("off")
+    plt.show()
