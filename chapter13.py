@@ -345,6 +345,58 @@ best_model_params = None
 
 #训练图像识别
 print ("==========训练图像识别===========")
+width = 299
+height = 299
+channels = 3
+
+# import matplotlib.image as mpimg
+# test_image = mpimg.imread(os.path.join("images","cnn","test_image.png"))[:, :, :channels]
+# plt.imshow(test_image)
+# plt.axis("off")
+# plt.show()
+#
+# test_image = 2 * test_image - 1
+#
+# import sys
+# import tarfile
+# from six.moves import urllib
+#
+# TF_MODELS_URL = "http://download.tensorflow.org/models"
+# INCEPTION_V3_URL = TF_MODELS_URL + "/inception_v3_2016_08_28.tar.gz"
+# INCEPTION_PATH = os.path.join("dataset", "inception")
+# INCEPTION_V3_CHECKPOINT_PATH = os.path.join(INCEPTION_PATH, "inception_v3.ckpt")
+#
+# def download_progress(count, block_size, total_size):
+#     percent = count * block_size * 100 // total_size
+#     sys.stdout.write("\rDownloading: {}%".format(percent))
+#     sys.stdout.flush()
+#
+# def fetch_pretrained_inception_v3(url=INCEPTION_V3_URL, path=INCEPTION_PATH):
+#     if os.path.exists(INCEPTION_V3_CHECKPOINT_PATH):
+#         return
+#     os.makedirs(path, exist_ok=True)
+#     tgz_path = os.path.join(path, "inception_v3.tgz")
+#     urllib.request.urlretrieve(url, tgz_path, reporthook=download_progress)
+#     inception_tgz = tarfile.open(tgz_path)
+#     inception_tgz.extractall(path=path)
+#     inception_tgz.close()
+#     os.remove(tgz_path)
+#
+# fetch_pretrained_inception_v3()
+#
+# import re
+#
+# CLASS_NAME_REGEX = re.compile(r"^n\d+\s+(.*)\s*$", re.M | re.U)
+#
+# def load_class_names():
+#     path = os.path.join("datasets", "inception", "imagenet_class_names.txt")
+#     with open(path, encoding="utf-8") as f:
+#         content = f.read()
+#         return CLASS_NAME_REGEX.findall(content)
+#
+# class_names = ["background"] + load_class_names()
+# print("class_names[:5]",class_names[:5])
+
 import sys
 import tarfile
 from six.moves import urllib
@@ -398,6 +450,7 @@ for flower_class in flower_classes:
     plt.figure(figsize=(10,5))
     for index, example_image_path in enumerate(image_paths[flower_class][:n_examples_per_class]):
         example_image = mpimg.imread(example_image_path)[:, :, :channels]
+        print("example_image.shape", example_image.shape)
         plt.subplot(100 + n_examples_per_class * 10 + index + 1)
         plt.title("{}x{}".format(example_image.shape[1], example_image.shape[0]))
         plt.imshow(example_image)
