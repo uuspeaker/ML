@@ -9,6 +9,7 @@ def load_housing_data(housing_path=HOUSING_PATH):
     return pd.read_csv(csv_path)
 
 housing = load_housing_data()
+housing = load_housing_data()
 print(housing.head(),housing.info())
 print(housing.ocean_proximity.value_counts())
 print(housing.describe())
