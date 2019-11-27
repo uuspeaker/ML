@@ -205,6 +205,8 @@ with tf.Session() as sess:
         num = 0
         for X_batch, y_batch in shuffle_batch(X_train, y_train, batch_size):
             num += 1
+            shuffle_index_train = np.random.permutation(100)
+            X_train, y_train = X_train[shuffle_index_train], y_train[shuffle_index_train]
             # print("epoch num X_batch.shape y_batch.shape", epoch, num, X_batch.shape, y_batch.shape)
 
             sess.run(training_op, feed_dict={X: X_batch, y: y_batch},options = run_opts)
