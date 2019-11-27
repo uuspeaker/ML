@@ -350,8 +350,13 @@ import tarfile
 from six.moves import urllib
 
 FLOWERS_URL = "http://download.tensorflow.org/example_images/flower_photos.tgz"
-FLOWERS_PATH = os.path.join("datasets", "flowers")
+FLOWERS_PATH = os.path.join("datasets")
 
+def download_progress(count, block_size, total_size):
+    percent = count * block_size * 100 // total_size
+    sys.stdout.write("\rDownloading: {}%".format(percent))
+    sys.stdout.flush()
+    
 def fetch_flowers(url=FLOWERS_URL, path=FLOWERS_PATH):
     if os.path.exists(FLOWERS_PATH):
         return
