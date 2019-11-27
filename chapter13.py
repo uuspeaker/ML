@@ -521,14 +521,17 @@ plt.title("{}x{}".format(prepared_image.shape[1], prepared_image.shape[0]))
 plt.axis("off")
 plt.show()
 
+from tf.keras.applications import inception
+import tensorflow.contrib.slim as slim
+
 reset_graph()
 
-X = tf.placeholder(tf.float32, shape=[None, height, width, channels], name="X")
-training = tf.placeholder_with_default(False, shape=[])
-with tf.contrib.slim.arg_scope(tf.contrib.slim.nets.inception_v3_arg_scope()):
-    logits, end_points = tf.contrib.slim.nets.inception.inception_v3(X, num_classes=1001, is_training=training)
-
-inception_saver = tf.train.Saver()
+X = tf.placeholder(tf.float32, shape=[None, 299, 299, 3], name="X")
+with slim.arg_scope(inception.inception_v3_arg_scope()):
+    logits, end_points = inception.inception_v3(
+        X, num_classes=1001, is_training=False)
+predictions = end_points["Predictions"]
+saver = tf.train.Saver()
 
 print("logits.op.inputs[0]",logits.op.inputs[0])
 print("logits.op.inputs[0].op.inputs[0]",logits.op.inputs[0].op.inputs[0])
