@@ -330,7 +330,7 @@ with tf.Session() as sess:
                 else:
                     checks_since_last_progress += 1
         acc_batch = accuracy.eval(feed_dict={X: X_batch, y: y_batch})
-        acc_val = accuracy.eval(feed_dict={X: X_valid, y: y_valid})
+        acc_val = accuracy.eval(feed_dict={X: X_valid[:100], y: y_valid[:100]})
         print("Epoch {}, last batch accuracy: {:.4f}%, valid. accuracy: {:.4f}%, valid. best loss: {:.6f}".format(
                   epoch, acc_batch * 100, acc_val * 100, best_loss_val))
         if checks_since_last_progress > max_checks_without_progress:
