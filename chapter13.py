@@ -525,7 +525,7 @@ reset_graph()
 
 X = tf.placeholder(tf.float32, shape=[None, height, width, channels], name="X")
 training = tf.placeholder_with_default(False, shape=[])
-with tf.contrib.slim.arg_scope(tf.contrib.slim.nets.inception.inception_v3_arg_scope()):
+with tf.contrib.slim.arg_scope(tf.contrib.slim.nets.inception_v3_arg_scope()):
     logits, end_points = tf.contrib.slim.nets.inception.inception_v3(X, num_classes=1001, is_training=training)
 
 inception_saver = tf.train.Saver()
