@@ -521,7 +521,7 @@ plt.title("{}x{}".format(prepared_image.shape[1], prepared_image.shape[0]))
 plt.axis("off")
 plt.show()
 
-from tf.keras.applications import inception
+from tensorflow.keras.applications import inception
 import tensorflow.contrib.slim as slim
 
 reset_graph()
