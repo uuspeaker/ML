@@ -358,15 +358,16 @@ def download_progress(count, block_size, total_size):
     sys.stdout.flush()
 
 def fetch_flowers(url=FLOWERS_URL, path=FLOWERS_PATH):
-    if os.path.exists(FLOWERS_PATH):
-        return
-    os.makedirs(path, exist_ok=True)
     tgz_path = os.path.join(path, "flower_photos.tgz")
+    if os.path.exists(tgz_path):
+        return
+    # os.makedirs(path, exist_ok=True)
+
     urllib.request.urlretrieve(url, tgz_path, reporthook=download_progress)
     flowers_tgz = tarfile.open(tgz_path)
     flowers_tgz.extractall(path=path)
     flowers_tgz.close()
-    os.remove(tgz_path)
+    # os.remove(tgz_path)
 
 fetch_flowers()
 
