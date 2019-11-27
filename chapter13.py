@@ -195,7 +195,7 @@ def shuffle_batch(X, y, batch_size):
         X_batch, y_batch = X[batch_idx], y[batch_idx]
         yield X_batch, y_batch
 
-n_epochs = 3
+n_epochs = 20
 batch_size = 100
 
 run_opts = tf.RunOptions(report_tensor_allocations_upon_oom = True)
