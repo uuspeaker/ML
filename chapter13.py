@@ -312,7 +312,7 @@ with tf.Session() as sess:
             iteration += 1
             sess.run(training_op, feed_dict={X: X_batch, y: y_batch, training: True})
             if iteration % check_interval == 0:
-                loss_val = loss.eval(feed_dict={X: X_valid, y: y_valid})
+                loss_val = loss.eval(feed_dict={X: X_valid[:1000], y: y_valid[:1000]})
                 if loss_val < best_loss_val:
                     best_loss_val = loss_val
                     checks_since_last_progress = 0
@@ -329,6 +329,6 @@ with tf.Session() as sess:
 
     if best_model_params:
         restore_model_params(best_model_params)
-    acc_test = accuracy.eval(feed_dict={X: X_test, y: y_test})
+    acc_test = accuracy.eval(feed_dict={X: X_test[:1000], y: y_test[:1000]})
     print("Final accuracy on test set:", acc_test)
     save_path = saver.save(sess, "./my_mnist_model")
