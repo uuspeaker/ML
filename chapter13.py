@@ -522,8 +522,8 @@ plt.axis("off")
 plt.show()
 
 
-from tensorflow.compat.v1.contrib.slim.nets import inception
-import tensorflow.compat.v1.contrib.slim as slim
+from tensorflow.contrib.slim.nets import inception
+import tensorflow.contrib.slim as slim
 reset_graph()
 
 X = tf.placeholder(tf.float32, shape=[None, height, width, channels], name="X")
