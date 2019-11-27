@@ -193,9 +193,9 @@ run_opts = tf.RunOptions(report_tensor_allocations_upon_oom = True)
 with tf.Session() as sess:
     init.run()
     for epoch in range(n_epochs):
+        num = 0
         for X_batch, y_batch in shuffle_batch(X_train, y_train, batch_size):
-            print("X_batch.shape ======================", X_batch.shape)
-            print("y_batch.shape ======================", y_batch.shape)
+            print("epoch num", epoch, num++)
             sess.run(training_op, feed_dict={X: X_batch, y: y_batch},options = run_opts)
         acc_batch = accuracy.eval(feed_dict={X: X_batch, y: y_batch})
         acc_test = accuracy.eval(feed_dict={X: X_test, y: y_test})
