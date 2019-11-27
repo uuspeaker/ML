@@ -252,22 +252,30 @@ with tf.name_scope("inputs"):
 conv1 = tf.layers.conv2d(X_reshaped, filters=conv1_fmaps, kernel_size=conv1_ksize,
                          strides=conv1_stride, padding=conv1_pad,
                          activation=tf.nn.relu, name="conv1")
+print("conv1.shape",conv1.shape)
 conv2 = tf.layers.conv2d(conv1, filters=conv2_fmaps, kernel_size=conv2_ksize,
                          strides=conv2_stride, padding=conv2_pad,
                          activation=tf.nn.relu, name="conv2")
-
+print("conv2.shape",conv2.shape)
 with tf.name_scope("pool3"):
     pool3 = tf.nn.max_pool(conv2, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding="VALID")
     pool3_flat = tf.reshape(pool3, shape=[-1, pool3_fmaps * 14 * 14])
     pool3_flat_drop = tf.layers.dropout(pool3_flat, conv2_dropout_rate, training=training)
+    print("pool3.shape", pool3.shape)
+    print("pool3_flat.shape", pool3_flat.shape)
+    print("pool3_flat_drop.shape", pool3_flat_drop.shape)
 
 with tf.name_scope("fc1"):
     fc1 = tf.layers.dense(pool3_flat_drop, n_fc1, activation=tf.nn.relu, name="fc1")
     fc1_drop = tf.layers.dropout(fc1, fc1_dropout_rate, training=training)
+    print("fc1.shape", fc1.shape)
+    print("fc1_drop.shape", fc1_drop.shape)
 
 with tf.name_scope("output"):
     logits = tf.layers.dense(fc1_drop, n_outputs, name="output")
     Y_proba = tf.nn.softmax(logits, name="Y_proba")
+    print("logits.shape", logits.shape)
+    print("Y_proba.shape", Y_proba.shape)
 
 with tf.name_scope("train"):
     xentropy = tf.nn.sparse_softmax_cross_entropy_with_logits(logits=logits, labels=y)
@@ -310,6 +318,7 @@ with tf.Session() as sess:
     for epoch in range(n_epochs):
         for X_batch, y_batch in shuffle_batch(X_train, y_train, batch_size):
             iteration += 1
+            print("epoch iteration",epoch, iteration)
             sess.run(training_op, feed_dict={X: X_batch, y: y_batch, training: True})
             if iteration % check_interval == 0:
                 loss_val = loss.eval(feed_dict={X: X_valid[:1000], y: y_valid[:1000]})
