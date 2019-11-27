@@ -176,7 +176,7 @@ with tf.name_scope("init_and_save"):
     saver = tf.train.Saver()
 
 (X_train, y_train), (X_test, y_test) = tf.keras.datasets.mnist.load_data()
-shuffle_index = np.random.permutation(6000)
+shuffle_index = np.random.permutation(60000)
 X_train, y_train = X_train[shuffle_index], y_train[shuffle_index]
 print('X_train.shape,y_train.shape========', X_train.shape,y_train.shape)
 print('X_test.shape,y_test.shape========', X_test.shape,y_test.shape)
@@ -195,7 +195,7 @@ def shuffle_batch(X, y, batch_size):
         X_batch, y_batch = X[batch_idx], y[batch_idx]
         yield X_batch, y_batch
 
-n_epochs = 20
+n_epochs = 2
 batch_size = 100
 
 run_opts = tf.RunOptions(report_tensor_allocations_upon_oom = True)
@@ -203,8 +203,7 @@ with tf.Session() as sess:
     init.run()
     for epoch in range(n_epochs):
         num = 0
-        shuffle_index_train = np.random.permutation(6000)
-        X_train, y_train = X_train[shuffle_index_train], y_train[shuffle_index_train]
+
         for X_batch, y_batch in shuffle_batch(X_train, y_train, batch_size):
             num += 1
 
