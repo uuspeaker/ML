@@ -322,7 +322,7 @@ with tf.Session() as sess:
             print("epoch iteration",epoch, iteration)
             sess.run(training_op, feed_dict={X: X_batch, y: y_batch, training: True})
             if iteration % check_interval == 0:
-                loss_val = loss.eval(feed_dict={X: X_valid, y: y_valid)
+                loss_val = loss.eval(feed_dict={X: X_valid, y: y_valid})
                 if loss_val < best_loss_val:
                     best_loss_val = loss_val
                     checks_since_last_progress = 0
