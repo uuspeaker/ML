@@ -345,57 +345,7 @@ best_model_params = None
 
 #训练图像识别
 print ("==========训练图像识别===========")
-width = 299
-height = 299
 channels = 3
-
-# import matplotlib.image as mpimg
-# test_image = mpimg.imread(os.path.join("images","cnn","test_image.png"))[:, :, :channels]
-# plt.imshow(test_image)
-# plt.axis("off")
-# plt.show()
-#
-# test_image = 2 * test_image - 1
-#
-# import sys
-# import tarfile
-# from six.moves import urllib
-#
-# TF_MODELS_URL = "http://download.tensorflow.org/models"
-# INCEPTION_V3_URL = TF_MODELS_URL + "/inception_v3_2016_08_28.tar.gz"
-# INCEPTION_PATH = os.path.join("dataset", "inception")
-# INCEPTION_V3_CHECKPOINT_PATH = os.path.join(INCEPTION_PATH, "inception_v3.ckpt")
-#
-# def download_progress(count, block_size, total_size):
-#     percent = count * block_size * 100 // total_size
-#     sys.stdout.write("\rDownloading: {}%".format(percent))
-#     sys.stdout.flush()
-#
-# def fetch_pretrained_inception_v3(url=INCEPTION_V3_URL, path=INCEPTION_PATH):
-#     if os.path.exists(INCEPTION_V3_CHECKPOINT_PATH):
-#         return
-#     os.makedirs(path, exist_ok=True)
-#     tgz_path = os.path.join(path, "inception_v3.tgz")
-#     urllib.request.urlretrieve(url, tgz_path, reporthook=download_progress)
-#     inception_tgz = tarfile.open(tgz_path)
-#     inception_tgz.extractall(path=path)
-#     inception_tgz.close()
-#     os.remove(tgz_path)
-#
-# fetch_pretrained_inception_v3()
-#
-# import re
-#
-# CLASS_NAME_REGEX = re.compile(r"^n\d+\s+(.*)\s*$", re.M | re.U)
-#
-# def load_class_names():
-#     path = os.path.join("datasets", "inception", "imagenet_class_names.txt")
-#     with open(path, encoding="utf-8") as f:
-#         content = f.read()
-#         return CLASS_NAME_REGEX.findall(content)
-#
-# class_names = ["background"] + load_class_names()
-# print("class_names[:5]",class_names[:5])
 
 import sys
 import tarfile
@@ -456,3 +406,229 @@ for flower_class in flower_classes:
         plt.imshow(example_image)
         plt.axis("off")
     plt.show()
+
+from skimage.transform import resize
+
+
+def prepare_image(image, target_width=299, target_height=299, max_zoom=0.2):
+    """Zooms and crops the image randomly for data augmentation."""
+
+    # First, let's find the largest bounding box with the target size ratio that fits within the image
+    height = image.shape[0]
+    width = image.shape[1]
+    image_ratio = width / height
+    target_image_ratio = target_width / target_height
+    crop_vertically = image_ratio < target_image_ratio
+    crop_width = width if crop_vertically else int(height * target_image_ratio)
+    crop_height = int(width / target_image_ratio) if crop_vertically else height
+
+    # Now let's shrink this bounding box by a random factor (dividing the dimensions by a random number
+    # between 1.0 and 1.0 + `max_zoom`.
+    resize_factor = np.random.rand() * max_zoom + 1.0
+    crop_width = int(crop_width / resize_factor)
+    crop_height = int(crop_height / resize_factor)
+
+    # Next, we can select a random location on the image for this bounding box.
+    x0 = np.random.randint(0, width - crop_width)
+    y0 = np.random.randint(0, height - crop_height)
+    x1 = x0 + crop_width
+    y1 = y0 + crop_height
+
+    # Let's crop the image using the random bounding box we built.
+    image = image[y0:y1, x0:x1]
+
+    # Let's also flip the image horizontally with 50% probability:
+    if np.random.rand() < 0.5:
+        image = np.fliplr(image)
+
+    # Now, let's resize the image to the target dimensions.
+    # The resize function of scikit-image will automatically transform the image to floats ranging from 0.0 to 1.0
+    image = resize(image, (target_width, target_height))
+
+    # Finally, let's ensure that the colors are represented as 32-bit floats:
+    return image.astype(np.float32)
+
+plt.figure(figsize=(6, 8))
+plt.imshow(example_image)
+plt.title("{}x{}".format(example_image.shape[1], example_image.shape[0]))
+plt.axis("off")
+plt.show()
+
+rows, cols = 2, 3
+
+plt.figure(figsize=(14, 8))
+for row in range(rows):
+    for col in range(cols):
+        prepared_image = prepare_image(example_image)
+        plt.subplot(rows, cols, row * cols + col + 1)
+        plt.title("{}x{}".format(prepared_image.shape[1], prepared_image.shape[0]))
+        plt.imshow(prepared_image)
+        plt.axis("off")
+plt.show()
+
+def prepare_image_with_tensorflow(image, target_width = 299, target_height = 299, max_zoom = 0.2):
+    """Zooms and crops the image randomly for data augmentation."""
+
+    # First, let's find the largest bounding box with the target size ratio that fits within the image
+    image_shape = tf.cast(tf.shape(image), tf.float32)
+    height = image_shape[0]
+    width = image_shape[1]
+    image_ratio = width / height
+    target_image_ratio = target_width / target_height
+    crop_vertically = image_ratio < target_image_ratio
+    crop_width = tf.cond(crop_vertically,
+                         lambda: width,
+                         lambda: height * target_image_ratio)
+    crop_height = tf.cond(crop_vertically,
+                          lambda: width / target_image_ratio,
+                          lambda: height)
+
+    # Now let's shrink this bounding box by a random factor (dividing the dimensions by a random number
+    # between 1.0 and 1.0 + `max_zoom`.
+    resize_factor = tf.random_uniform(shape=[], minval=1.0, maxval=1.0 + max_zoom)
+    crop_width = tf.cast(crop_width / resize_factor, tf.int32)
+    crop_height = tf.cast(crop_height / resize_factor, tf.int32)
+    box_size = tf.stack([crop_height, crop_width, 3])   # 3 = number of channels
+
+    # Let's crop the image using a random bounding box of the size we computed
+    image = tf.random_crop(image, box_size)
+
+    # Let's also flip the image horizontally with 50% probability:
+    image = tf.image.random_flip_left_right(image)
+
+    # The resize_bilinear function requires a 4D tensor (a batch of images)
+    # so we need to expand the number of dimensions first:
+    image_batch = tf.expand_dims(image, 0)
+
+    # Finally, let's resize the image to the target dimensions. Note that this function
+    # returns a float32 tensor.
+    image_batch = tf.image.resize_bilinear(image_batch, [target_height, target_width])
+    image = image_batch[0] / 255  # back to a single image, and scale the colors from 0.0 to 1.0
+    return image
+
+
+reset_graph()
+
+input_image = tf.placeholder(tf.uint8, shape=[None, None, 3])
+prepared_image_op = prepare_image_with_tensorflow(input_image)
+
+with tf.Session():
+    prepared_image = prepared_image_op.eval(feed_dict={input_image: example_image})
+
+plt.figure(figsize=(6, 6))
+plt.imshow(prepared_image)
+plt.title("{}x{}".format(prepared_image.shape[1], prepared_image.shape[0]))
+plt.axis("off")
+plt.show()
+
+
+from tensorflow.compat.v1.contrib.slim.nets import inception
+import tensorflow.compat.v1.contrib.slim as slim
+reset_graph()
+
+X = tf.placeholder(tf.float32, shape=[None, height, width, channels], name="X")
+training = tf.placeholder_with_default(False, shape=[])
+with slim.arg_scope(inception.inception_v3_arg_scope()):
+    logits, end_points = inception.inception_v3(X, num_classes=1001, is_training=training)
+
+inception_saver = tf.train.Saver()
+
+print("logits.op.inputs[0]",logits.op.inputs[0])
+print("logits.op.inputs[0].op.inputs[0]",logits.op.inputs[0].op.inputs[0])
+print("logits.op.inputs[0].op.inputs[0].op.inputs[0]",logits.op.inputs[0].op.inputs[0].op.inputs[0])
+
+print("end_points['PreLogits']",end_points["PreLogits"])
+
+prelogits = tf.squeeze(end_points["PreLogits"], axis=[1, 2])
+
+n_outputs = len(flower_classes)
+
+with tf.name_scope("new_output_layer"):
+    flower_logits = tf.layers.dense(prelogits, n_outputs, name="flower_logits")
+    Y_proba = tf.nn.softmax(flower_logits, name="Y_proba")
+
+y = tf.placeholder(tf.int32, shape=[None])
+
+with tf.name_scope("train"):
+    xentropy = tf.nn.sparse_softmax_cross_entropy_with_logits(logits=flower_logits, labels=y)
+    loss = tf.reduce_mean(xentropy)
+    optimizer = tf.train.AdamOptimizer()
+    flower_vars = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, scope="flower_logits")
+    training_op = optimizer.minimize(loss, var_list=flower_vars)
+
+with tf.name_scope("eval"):
+    correct = tf.nn.in_top_k(flower_logits, y, 1)
+    accuracy = tf.reduce_mean(tf.cast(correct, tf.float32))
+
+with tf.name_scope("init_and_save"):
+    init = tf.global_variables_initializer()
+    saver = tf.train.Saver()
+
+print("[v.name for v in flower_vars]",[v.name for v in flower_vars])
+
+flower_class_ids = {flower_class: index for index, flower_class in enumerate(flower_classes)}
+print("flower_class_ids",flower_class_ids)
+
+flower_paths_and_classes = []
+for flower_class, paths in image_paths.items():
+    for path in paths:
+        flower_paths_and_classes.append((path, flower_class_ids[flower_class]))
+
+test_ratio = 0.2
+train_size = int(len(flower_paths_and_classes) * (1 - test_ratio))
+
+np.random.shuffle(flower_paths_and_classes)
+
+flower_paths_and_classes_train = flower_paths_and_classes[:train_size]
+flower_paths_and_classes_test = flower_paths_and_classes[train_size:]
+
+print("flower_paths_and_classes_train[:3]",flower_paths_and_classes_train[:3])
+
+from random import sample
+
+def prepare_batch(flower_paths_and_classes, batch_size):
+    batch_paths_and_classes = sample(flower_paths_and_classes, batch_size)
+    images = [mpimg.imread(path)[:, :, :channels] for path, labels in batch_paths_and_classes]
+    prepared_images = [prepare_image(image) for image in images]
+    X_batch = 2 * np.stack(prepared_images) - 1 # Inception expects colors ranging from -1 to 1
+    y_batch = np.array([labels for path, labels in batch_paths_and_classes], dtype=np.int32)
+    return X_batch, y_batch
+
+X_batch, y_batch = prepare_batch(flower_paths_and_classes_train, batch_size=4)
+
+print("X_batch.shape, y_batch.shape",X_batch.shape, y_batch.shape)
+
+X_test, y_test = prepare_batch(flower_paths_and_classes_test, batch_size=len(flower_paths_and_classes_test))
+
+n_epochs = 10
+batch_size = 40
+n_iterations_per_epoch = len(flower_paths_and_classes_train)
+
+with tf.Session() as sess:
+    init.run()
+    inception_saver.restore(sess, INCEPTION_V3_CHECKPOINT_PATH)
+
+    for epoch in range(n_epochs):
+        print("Epoch", epoch, end)
+        for iteration in range(n_iterations_per_epoch):
+            print(".", end)
+            X_batch, y_batch = prepare_batch(flower_paths_and_classes_train, batch_size)
+            sess.run(training_op, feed_dict={X: X_batch, y: y_batch, training: True})
+
+        acc_batch = accuracy.eval(feed_dict={X: X_batch, y: y_batch})
+        print("  Last batch accuracy:", acc_batch)
+
+        save_path = saver.save(sess, "./my_flowers_model")
+
+n_test_batches = 10
+X_test_batches = np.array_split(X_test, n_test_batches)
+y_test_batches = np.array_split(y_test, n_test_batches)
+
+with tf.Session() as sess:
+    saver.restore(sess, "./my_flowers_model")
+
+    print("Computing final accuracy on the test set (this will take a while)...")
+    acc_test = np.mean([
+        accuracy.eval(feed_dict={X: X_test_batch, y: y_test_batch})
+        for X_test_batch, y_test_batch in zip(X_test_batches, y_test_batches)])
+    print("Test accuracy:", acc_test)
