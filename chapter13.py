@@ -218,6 +218,7 @@ run_opts = tf.RunOptions(report_tensor_allocations_upon_oom = True)
 
 
 # 训练带有dropout的网络
+print("训练带有dropout的网络")
 height = 28
 width = 28
 channels = 1
@@ -303,7 +304,7 @@ def restore_model_params(model_params):
     feed_dict = {init_values[gvar_name]: model_params[gvar_name] for gvar_name in gvar_names}
     tf.get_default_session().run(assign_ops, feed_dict=feed_dict)
 
-n_epochs = 1000
+n_epochs = 10
 batch_size = 50
 iteration = 0
 
@@ -321,7 +322,7 @@ with tf.Session() as sess:
             print("epoch iteration",epoch, iteration)
             sess.run(training_op, feed_dict={X: X_batch, y: y_batch, training: True})
             if iteration % check_interval == 0:
-                loss_val = loss.eval(feed_dict={X: X_valid[:1000], y: y_valid[:1000]})
+                loss_val = loss.eval(feed_dict={X: X_valid, y: y_valid)
                 if loss_val < best_loss_val:
                     best_loss_val = loss_val
                     checks_since_last_progress = 0
@@ -329,7 +330,7 @@ with tf.Session() as sess:
                 else:
                     checks_since_last_progress += 1
         acc_batch = accuracy.eval(feed_dict={X: X_batch, y: y_batch})
-        acc_val = accuracy.eval(feed_dict={X: X_valid[:1000], y: y_valid[:1000]})
+        acc_val = accuracy.eval(feed_dict={X: X_valid, y: y_valid})
         print("Epoch {}, last batch accuracy: {:.4f}%, valid. accuracy: {:.4f}%, valid. best loss: {:.6f}".format(
                   epoch, acc_batch * 100, acc_val * 100, best_loss_val))
         if checks_since_last_progress > max_checks_without_progress:
