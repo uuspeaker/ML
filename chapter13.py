@@ -195,7 +195,8 @@ with tf.Session() as sess:
     for epoch in range(n_epochs):
         num = 0
         for X_batch, y_batch in shuffle_batch(X_train, y_train, batch_size):
-            print("epoch num", epoch, num++)
+            num += 1
+            print("epoch num", epoch, num)
             sess.run(training_op, feed_dict={X: X_batch, y: y_batch},options = run_opts)
         acc_batch = accuracy.eval(feed_dict={X: X_batch, y: y_batch})
         acc_test = accuracy.eval(feed_dict={X: X_test, y: y_test})
