@@ -13,6 +13,10 @@ print(tf.__version__)
 fashion_mnist = keras.datasets.fashion_mnist
 
 (train_images, train_labels), (test_images, test_labels) = fashion_mnist.load_data()
+(test_images, test_labels) = (test_images[:1000], test_labels[:1000])
+
+class_names = ['T-shirt/top', 'Trouser', 'Pullover', 'Dress', 'Coat',
+               'Sandal', 'Shirt', 'Sneaker', 'Bag', 'Ankle boot']
 
 print("train_images.shape",train_images.shape)
 print("train_labels",train_labels)
