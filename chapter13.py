@@ -343,7 +343,7 @@ best_model_params = None
 #     print("Final accuracy on test set:", acc_test)
 #     save_path = saver.save(sess, "./my_mnist_model")
 
-#训练图像识别
+#训练图像分类
 print ("==========训练图像识别===========")
 channels = 3
 
@@ -521,15 +521,15 @@ plt.title("{}x{}".format(prepared_image.shape[1], prepared_image.shape[0]))
 plt.axis("off")
 plt.show()
 
-from tensorflow.keras.applications import inception
-import tensorflow.contrib.slim as slim
+
 
 reset_graph()
 
 X = tf.placeholder(tf.float32, shape=[None, 299, 299, 3], name="X")
-with slim.arg_scope(inception.inception_v3_arg_scope()):
-    logits, end_points = inception.inception_v3(
-        X, num_classes=1001, is_training=False)
+
+logits, end_points = tf.keras.applications.InceptionV3(
+    X, num_classes=1001, is_training=False)
+
 predictions = end_points["Predictions"]
 saver = tf.train.Saver()
 
