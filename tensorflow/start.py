@@ -8,7 +8,7 @@ import numpy as np
 mnist = tf.keras.datasets.mnist
 
 (x_train, y_train), (x_test, y_test) = mnist.load_data()
-(x_train, y_train) = (x_train[:60000], y_train[:60000])
+(x_train, y_train) = (x_train[:10000], y_train[:10000])
 (x_test, y_test) = (x_test[:1000], y_test[:1000])
 x_train, x_test = x_train / 255.0, x_test / 255.0
 
@@ -23,7 +23,7 @@ model.compile(optimizer='adam',
               loss='sparse_categorical_crossentropy',
               metrics=['accuracy'])
 
-batch_size = 100
+batch_size = 1000
 def shuffle_batch(X, y, batch_size):
     rnd_idx = np.random.permutation(len(X))
     n_batches = len(X) // batch_size
