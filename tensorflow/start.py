@@ -23,15 +23,6 @@ model.compile(optimizer='adam',
               loss='sparse_categorical_crossentropy',
               metrics=['accuracy'])
 
-batch_size = 1000
-def shuffle_batch(X, y, batch_size):
-    rnd_idx = np.random.permutation(len(X))
-    n_batches = len(X) // batch_size
-    for batch_idx in np.array_split(rnd_idx, n_batches):
-        X_batch, y_batch = X[batch_idx], y[batch_idx]
-        yield X_batch, y_batch
-
-for X_batch, y_batch in shuffle_batch(x_train, y_train, batch_size):
-    model.fit(X_batch, y_batch, epochs=5)
+model.fit(x_train, y_train, batch_size=1000, epochs=5)
 
 model.evaluate(x_test,  y_test, verbose=2)

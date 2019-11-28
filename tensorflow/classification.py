@@ -13,6 +13,7 @@ print(tf.__version__)
 fashion_mnist = keras.datasets.fashion_mnist
 
 (train_images, train_labels), (test_images, test_labels) = fashion_mnist.load_data()
+(train_images, train_labels) = (train_images[:10000], train_labels[:10000])
 (test_images, test_labels) = (test_images[:1000], test_labels[:1000])
 
 class_names = ['T-shirt/top', 'Trouser', 'Pullover', 'Dress', 'Coat',
@@ -51,16 +52,7 @@ model.compile(optimizer='adam',
               loss='sparse_categorical_crossentropy',
               metrics=['accuracy'])
 
-batch_size = 1000
-def shuffle_batch(X, y, batch_size):
-    rnd_idx = np.random.permutation(len(X))
-    n_batches = len(X) // batch_size
-    for batch_idx in np.array_split(rnd_idx, n_batches):
-        X_batch, y_batch = X[batch_idx], y[batch_idx]
-        yield X_batch, y_batch
-
-for X_batch, y_batch in shuffle_batch(train_images, train_labels, batch_size):
-    model.fit(X_batch, y_batch, epochs=5)
+model.fit(train_images, train_labels, batch_size=1000, epochs=5)
 
 
 test_loss, test_acc = model.evaluate(test_images,  test_labels, verbose=2)
