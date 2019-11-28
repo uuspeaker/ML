@@ -30,7 +30,7 @@ def shuffle_batch(X, y, batch_size):
         X_batch, y_batch = X[batch_idx], y[batch_idx]
         yield X_batch, y_batch
 
-for X_batch, y_batch in shuffle_batch(X_train, y_train, batch_size):
+for X_batch, y_batch in shuffle_batch(x_train, y_train, batch_size):
     model.fit(X_batch, y_batch, epochs=5)
 
 model.evaluate(x_test,  y_test, verbose=2)
