@@ -521,9 +521,6 @@ plt.title("{}x{}".format(prepared_image.shape[1], prepared_image.shape[0]))
 plt.axis("off")
 plt.show()
 
-from tensorflow.contrib.slim.nets import inception
-import tensorflow.contrib.slim as slim
-
 reset_graph()
 
 import sys
@@ -549,9 +546,12 @@ def fetch_pretrained_inception_v3(url=INCEPTION_V3_URL, path=INCEPTION_PATH):
     inception_tgz = tarfile.open(tgz_path)
     inception_tgz.extractall(path=path)
     inception_tgz.close()
-    os.remove(tgz_path)
+    # os.remove(tgz_path)
 
 fetch_pretrained_inception_v3()
+
+from tensorflow.contrib.slim.nets import inception
+import tensorflow.contrib.slim as slim
 
 X = tf.placeholder(tf.float32, shape=[None, height, width, channels], name="X")
 training = tf.placeholder_with_default(False, shape=[])
