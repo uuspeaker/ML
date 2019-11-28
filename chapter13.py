@@ -521,17 +521,44 @@ plt.title("{}x{}".format(prepared_image.shape[1], prepared_image.shape[0]))
 plt.axis("off")
 plt.show()
 
-
+from tensorflow.contrib.slim.nets import inception
+import tensorflow.contrib.slim as slim
 
 reset_graph()
 
-X = tf.placeholder(tf.float32, shape=[None, 299, 299, 3], name="X")
+import sys
+import tarfile
+from six.moves import urllib
 
-logits, end_points = tf.keras.applications.InceptionV3(
-    X, num_classes=1001, is_training=False)
+TF_MODELS_URL = "http://download.tensorflow.org/models"
+INCEPTION_V3_URL = TF_MODELS_URL + "/inception_v3_2016_08_28.tar.gz"
+INCEPTION_PATH = os.path.join("dataset", "inception")
+INCEPTION_V3_CHECKPOINT_PATH = os.path.join(INCEPTION_PATH, "inception_v3.ckpt")
 
-predictions = end_points["Predictions"]
-saver = tf.train.Saver()
+def download_progress(count, block_size, total_size):
+    percent = count * block_size * 100 // total_size
+    sys.stdout.write("\rDownloading: {}%".format(percent))
+    sys.stdout.flush()
+
+def fetch_pretrained_inception_v3(url=INCEPTION_V3_URL, path=INCEPTION_PATH):
+    if os.path.exists(INCEPTION_V3_CHECKPOINT_PATH):
+        return
+    os.makedirs(path, exist_ok=True)
+    tgz_path = os.path.join(path, "inception_v3.tgz")
+    urllib.request.urlretrieve(url, tgz_path, reporthook=download_progress)
+    inception_tgz = tarfile.open(tgz_path)
+    inception_tgz.extractall(path=path)
+    inception_tgz.close()
+    os.remove(tgz_path)
+
+fetch_pretrained_inception_v3()
+
+X = tf.placeholder(tf.float32, shape=[None, height, width, channels], name="X")
+training = tf.placeholder_with_default(False, shape=[])
+with slim.arg_scope(inception.inception_v3_arg_scope()):
+    logits, end_points = inception.inception_v3(X, num_classes=1001, is_training=training)
+
+inception_saver = tf.train.Saver()
 
 print("logits.op.inputs[0]",logits.op.inputs[0])
 print("logits.op.inputs[0].op.inputs[0]",logits.op.inputs[0].op.inputs[0])
