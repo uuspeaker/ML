@@ -3,6 +3,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 # Install TensorFlow
 
 import tensorflow as tf
+import numpy as np
 
 mnist = tf.keras.datasets.mnist
 
