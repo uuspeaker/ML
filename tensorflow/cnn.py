@@ -6,6 +6,8 @@ from tensorflow.keras import datasets, layers, models
 import matplotlib.pyplot as plt
 
 (train_images, train_labels), (test_images, test_labels) = datasets.cifar10.load_data()
+(train_images, train_labels) = (train_images[:5000], train_labels[:5000])
+(test_images, test_labels) = (test_images[:1000], test_labels[:1000])
 
 # Normalize pixel values to be between 0 and 1
 train_images, test_images = train_images / 255.0, test_images / 255.0
@@ -52,3 +54,4 @@ plt.legend(loc='lower right')
 
 test_loss, test_acc = model.evaluate(test_images,  test_labels, verbose=2)
 
+print(test_acc)
