@@ -21,6 +21,7 @@ print(tf.__version__)
     # Also return the `info` structure.
     with_info=True)
 
+print("=======info=======",info)
 encoder = info.features['text'].encoder
 
 print ('Vocabulary size: {}'.format(encoder.vocab_size))
@@ -42,7 +43,7 @@ for train_example, train_label in train_data.take(1):
   print('Encoded text:', train_example[:10].numpy())
   print('Label:', train_label.numpy())
 
-encoder.decode(train_example)
+print("encoder.decode(train_example)",encoder.decode(train_example))
 
 BUFFER_SIZE = 1000
 
