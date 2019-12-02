@@ -127,7 +127,6 @@ train_data_gen = image_gen.flow_from_directory(batch_size=batch_size,
 
 # Re-use the same custom plotting function defined and used
 # above to visualize the training images
-plotImages(augmented_images)
 
 image_gen_train = ImageDataGenerator(
                     rescale=1./255,
