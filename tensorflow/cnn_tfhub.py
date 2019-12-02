@@ -4,7 +4,6 @@ import matplotlib.pylab as plt
 
 import tensorflow as tf
 
-!pip install -q -U tf-hub-nightly
 import tensorflow_hub as hub
 
 from tensorflow.keras import layers
@@ -30,7 +29,7 @@ result = classifier.predict(grace_hopper[np.newaxis, ...])
 print("result.shape",result.shape)
 
 predicted_class = np.argmax(result[0], axis=-1)
-print("predicted_class"predicted_class)
+print("predicted_class",predicted_class)
 
 labels_path = tf.keras.utils.get_file('ImageNetLabels.txt','https://storage.googleapis.com/download.tensorflow.org/data/ImageNetLabels.txt')
 imagenet_labels = np.array(open(labels_path).read().splitlines())
