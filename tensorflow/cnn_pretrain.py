@@ -31,7 +31,7 @@ for image, label in raw_train.take(2):
   plt.imshow(image)
   plt.title(get_label_name(label))
 
-IMG_SIZE = 160 # All images will be resized to 160x160
+IMG_SIZE = 40 # All images will be resized to 160x160
 
 def format_example(image, label):
   image = tf.cast(image, tf.float32)
@@ -53,7 +53,7 @@ test_batches = test.batch(BATCH_SIZE)
 for image_batch, label_batch in train_batches.take(1):
    pass
 
-image_batch.shape
+print("image_batch.shape",image_batch.shape)
 
 IMG_SHAPE = (IMG_SIZE, IMG_SIZE, 3)
 
@@ -63,7 +63,7 @@ base_model = tf.keras.applications.MobileNetV2(input_shape=IMG_SHAPE,
                                                weights='imagenet')
 
 feature_batch = base_model(image_batch)
-print(feature_batch.shape)
+print("feature_batch.shape",feature_batch.shape)
 
 base_model.trainable = False
 
@@ -72,11 +72,11 @@ base_model.summary()
 
 global_average_layer = tf.keras.layers.GlobalAveragePooling2D()
 feature_batch_average = global_average_layer(feature_batch)
-print(feature_batch_average.shape)
+print("feature_batch_average.shape",feature_batch_average.shape)
 
 prediction_layer = keras.layers.Dense(1)
 prediction_batch = prediction_layer(feature_batch_average)
-print(prediction_batch.shape)
+print("prediction_batch.shape",prediction_batch.shape)
 
 model = tf.keras.Sequential([
   base_model,
