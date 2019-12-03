@@ -45,7 +45,7 @@ data_root = tf.keras.utils.get_file(
 
 image_generator = tf.keras.preprocessing.image.ImageDataGenerator(rescale=1/255)
 image_data = image_generator.flow_from_directory(str(data_root), target_size=IMAGE_SHAPE)
-print("image_data",image_data)
+print("image_data.shape",image_data.shape)
 
 for image_batch, label_batch in image_data:
   print("Image batch shape: ", image_batch.shape)
