@@ -45,6 +45,7 @@ data_root = tf.keras.utils.get_file(
 
 image_generator = tf.keras.preprocessing.image.ImageDataGenerator(rescale=1/255)
 image_data = image_generator.flow_from_directory(str(data_root), target_size=IMAGE_SHAPE)
+print("image_data",image_data)
 
 for image_batch, label_batch in image_data:
   print("Image batch shape: ", image_batch.shape)
@@ -109,6 +110,55 @@ batch_stats_callback = CollectBatchStats()
 history = model.fit_generator(image_data, epochs=2,
                               steps_per_epoch=steps_per_epoch,
                               callbacks = [batch_stats_callback])
+
+plt.figure()
+plt.ylabel("Loss")
+plt.xlabel("Training Steps")
+plt.ylim([0,2])
+plt.plot(batch_stats_callback.batch_losses)
+
+plt.figure()
+plt.ylabel("Accuracy")
+plt.xlabel("Training Steps")
+plt.ylim([0,1])
+plt.plot(batch_stats_callback.batch_acc)
+
+class_names = sorted(image_data.class_indices.items(), key=lambda pair:pair[1])
+class_names = np.array([key.title() for key, value in class_names])
+print("class_names",class_names)
+
+predicted_batch = model.predict(image_batch)
+predicted_id = np.argmax(predicted_batch, axis=-1)
+predicted_label_batch = class_names[predicted_id]
+
+label_id = np.argmax(label_batch, axis=-1)
+
+plt.figure(figsize=(10,9))
+plt.subplots_adjust(hspace=0.5)
+for n in range(30):
+  plt.subplot(6,5,n+1)
+  plt.imshow(image_batch[n])
+  color = "green" if predicted_id[n] == label_id[n] else "red"
+  plt.title(predicted_label_batch[n].title(), color=color)
+  plt.axis('off')
+_ = plt.suptitle("Model predictions (green: correct, red: incorrect)")
+
+import time
+t = time.time()
+
+export_path = "/tmp/saved_models/{}".format(int(t))
+model.save(export_path, save_format='tf')
+
+print("export_path",export_path)
+
+reloaded = tf.keras.models.load_model(export_path)
+
+result_batch = model.predict(image_batch)
+reloaded_result_batch = reloaded.predict(image_batch)
+
+abs(reloaded_result_batch - result_batch).max()
+
+
 
 
 

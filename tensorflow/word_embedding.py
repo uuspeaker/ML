@@ -11,7 +11,7 @@ tfds.disable_progress_bar()
 embedding_layer = layers.Embedding(1000, 5)
 
 result = embedding_layer(tf.constant([1,2,3]))
-result.numpy()
+print("result.numpy()",result.numpy())
 
 result = embedding_layer(tf.constant([[0,1,2],[3,4,5]]))
 print("result.shape",result.shape)
