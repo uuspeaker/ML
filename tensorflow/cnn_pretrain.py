@@ -31,7 +31,8 @@ for image, label in raw_train.take(2):
   plt.imshow(image)
   plt.title(get_label_name(label))
 
-IMG_SIZE = 40 # All images will be resized to 160x160
+# IMG_SIZE = 160 # All images will be resized to 160x160
+IMG_SIZE = 40
 
 def format_example(image, label):
   image = tf.cast(image, tf.float32)

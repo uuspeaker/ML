@@ -10,7 +10,8 @@ from tensorflow.keras import layers
 
 classifier_url ="https://hub.tensorflow.google.cn/google/tf2-preview/mobilenet_v2/classification/2" #@param {type:"string"}
 
-IMAGE_SHAPE = (224, 224)
+# IMAGE_SHAPE = (224, 224)
+IMAGE_SHAPE = (46, 46)
 
 classifier = tf.keras.Sequential([
     hub.KerasLayer(classifier_url, input_shape=IMAGE_SHAPE+(3,))
