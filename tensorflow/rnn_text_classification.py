@@ -17,6 +17,8 @@ dataset, info = tfds.load('imdb_reviews/subwords8k', with_info=True,
                           as_supervised=True)
 train_dataset, test_dataset = dataset['train'], dataset['test']
 
+print("train_dataset 2",train_dataset.take(2))
+
 encoder = info.features['text'].encoder
 
 print ('Vocabulary size: {}'.format(encoder.vocab_size))
