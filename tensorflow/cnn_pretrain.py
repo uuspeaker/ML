@@ -100,7 +100,7 @@ num_train, num_val, num_test = (
 )
 
 initial_epochs = 10
-steps_per_epoch = round(num_train)//BATCH_SIZE
+steps_per_epoch = round(num_train)
 validation_steps = 20
 
 loss0,accuracy0 = model.evaluate(validation_batches, steps = validation_steps)
